@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
@@ -28,8 +29,6 @@ def upload_image():
     return jsonify({"caption": caption})
 
 if __name__ == "__main__":
-    import os
-
 port = os.environ.get("PORT", "5000")  # Default to 5000 if PORT is not set
 app.run(debug=True, host="0.0.0.0", port=int(port))
 
