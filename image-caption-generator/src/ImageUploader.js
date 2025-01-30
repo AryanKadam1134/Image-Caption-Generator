@@ -14,7 +14,7 @@ const ImageUploader = () => {
     formData.append("image", image);
 
     try {
-      const response = await axios.post("https://image-caption-generator-wg00.onrender.com/upload", formData, {
+      const response = await axios.post("https://image-caption-generator-m0uo.onrender.com/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setCaption(response.data.caption);
