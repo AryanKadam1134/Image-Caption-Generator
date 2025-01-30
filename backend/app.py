@@ -6,8 +6,8 @@ from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
 
-# Enable CORS for all domains (you can specify allowed origins if needed)
-CORS(app, resources={r"/*": {"origins": "*"}})
+# Allow specific frontend domain (Update with your actual frontend URL)
+CORS(app, resources={r"/*": {"origins": "https://image-caption-generator-m1vr97af8-aryankadam1134s-projects.vercel.app"}})
 
 # Load BLIP model and processor for image captioning
 try:
@@ -17,17 +17,20 @@ try:
     print("Model loaded successfully!")
 except Exception as e:
     print(f"Error loading model: {e}")
-    exit(1)  # Stop execution if model fails to load
+    exit(1)
 
 @app.route("/upload", methods=["POST"])
 def upload_image():
     try:
-        # Check if the request contains a file
+        # Allow CORS headers in the response
+        response = jsonify({})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        
         if "image" not in request.files:
             return jsonify({"error": "No image provided"}), 400
 
         image_file = request.files["image"]
-        image = Image.open(image_file.stream).convert("RGB")  # Convert to RGB for consistency
+        image = Image.open(image_file.stream).convert("RGB")
 
         # Process the image and generate caption
         inputs = processor(images=image, return_tensors="pt")
@@ -45,5 +48,5 @@ def home():
     return jsonify({"message": "Image Caption Generator Backend is Running!"})
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Get PORT from environment variable
-    app.run(debug=False, host="0.0.0.0", port=port)  # Disable debug for production
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host="0.0.0.0", port=port)
