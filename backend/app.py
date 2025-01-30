@@ -9,7 +9,6 @@ app = Flask(__name__)
 # Allow specific frontend domain (Update with your actual Vercel URL)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-
 # Load BLIP model and processor for image captioning
 try:
     print("Loading BLIP model and processor...")
@@ -19,7 +18,6 @@ try:
 except Exception as e:
     print(f"Error loading model: {e}")
     model, processor = None, None  # Avoid crashing app
-
 
 @app.route("/upload", methods=["OPTIONS", "POST"])
 def upload_image():
@@ -51,7 +49,6 @@ def upload_image():
     except Exception as e:
         print(f"Error processing image: {e}")
         return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
-
 
 @app.route("/", methods=["GET"])
 def home():
