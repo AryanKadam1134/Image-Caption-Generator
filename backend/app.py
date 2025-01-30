@@ -2,11 +2,11 @@ import os
 from flask import Flask, request, jsonify
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 
-# Allow specific frontend domain (Update with your actual Vercel URL)
+# Allow specific frontend domain (Update with your actual frontend URL)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # Load BLIP model and processor for image captioning
@@ -20,6 +20,7 @@ except Exception as e:
     model, processor = None, None  # Avoid crashing app
 
 @app.route("/upload", methods=["OPTIONS", "POST"])
+@cross_origin()
 def upload_image():
     if request.method == "OPTIONS":
         response = jsonify({"message": "CORS preflight successful"})
@@ -53,6 +54,7 @@ def upload_image():
         return response, 500
 
 @app.route("/", methods=["GET"])
+@cross_origin()
 def home():
     response = jsonify({"message": "Image Caption Generator Backend is Running!"})
     response.headers.add("Access-Control-Allow-Origin", "*")  # Allow frontend requests
