@@ -7,8 +7,6 @@ const ImageUploader = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_URL = "https://image-caption-generator-nf9n.onrender.com/upload";
-
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
     setCaption("");
@@ -28,17 +26,15 @@ const ImageUploader = () => {
       setLoading(true);
       setError("");
 
-      const response = await axios.post(API_URL, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      const response = await axios.post(
+        "http://localhost:5000/upload", // Change this URL
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
 
-      if (response.status === 200) {
-        setCaption(response.data.caption);
-      } else {
-        setError("Unexpected response from the server.");
-      }
+      setCaption(response.data.caption);
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading image", error);
       setError("Failed to generate caption. Please try again.");
     } finally {
       setLoading(false);
