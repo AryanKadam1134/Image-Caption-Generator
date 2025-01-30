@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
 
 app = Flask(__name__)
 
@@ -48,11 +48,15 @@ def upload_image():
 
     except Exception as e:
         print(f"Error processing image: {e}")
-        return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
+        response = jsonify({"error": "Internal Server Error", "details": str(e)})
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Allow frontend requests
+        return response, 500
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"message": "Image Caption Generator Backend is Running!"})
+    response = jsonify({"message": "Image Caption Generator Backend is Running!"})
+    response.headers.add("Access-Control-Allow-Origin", "*")  # Allow frontend requests
+    return response
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
