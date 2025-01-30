@@ -6,15 +6,19 @@ function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const API_URL = "https://image-caption-generator-gsfe.onrender.com";
 
   const handleImageChange = (event) => {
     setSelectedImage(event.target.files[0]);
     setCaption("");
+    setError("");
   };
 
   const handleUpload = async () => {
     if (!selectedImage) {
-      alert("Please select an image first.");
+      setError("⚠️ Please select an image first.");
       return;
     }
 
@@ -23,13 +27,22 @@ function App() {
 
     try {
       setLoading(true);
-      const response = await axios.post("https://image-caption-generator-gsfe.onrender.com/upload", formData, {
+      setError("");
+
+      const response = await axios.post(`${API_URL}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setCaption(response.data.caption);
+
+      if (response.status === 200) {
+        setCaption(response.data.caption);
+      } else {
+        setError("⚠️ Unexpected response from the server.");
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Failed to generate caption. Please try again.");
+      setError(
+        error.response?.data?.error || "⚠️ Failed to generate caption. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -38,7 +51,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1 className="title">Image Caption Generator</h1>
+        <h1 className="title">🖼️ Image Caption Generator</h1>
+
         <div className="upload-section">
           <input
             type="file"
@@ -46,25 +60,33 @@ function App() {
             onChange={handleImageChange}
             className="file-input custom-file-input"
           />
-          <button onClick={handleUpload} className="upload-button custom-upload-button">
-            {loading ? "Generating..." : "Generate Caption"}
+          <button
+            onClick={handleUpload}
+            className="upload-button custom-upload-button"
+            disabled={loading}
+          >
+            {loading ? "⏳ Generating..." : "🚀 Generate Caption"}
           </button>
         </div>
+
+        {error && <p className="error-message">{error}</p>}
+
         <div className="result-section">
-          <div className="image-preview">
-            {selectedImage && (
+          {selectedImage && (
+            <div className="image-preview">
               <img
                 src={URL.createObjectURL(selectedImage)}
                 alt="Selected"
                 className="preview-image fixed-dimensions"
               />
-            )}
-          </div>
-          <div className="caption-display">
-            {caption && (
+            </div>
+          )}
+
+          {caption && (
+            <div className="caption-display">
               <p className="generated-caption colorful-caption">{caption}</p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </header>
     </div>

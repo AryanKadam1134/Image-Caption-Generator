@@ -6,8 +6,8 @@ from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
 
-# Allow specific frontend domain (Update with your actual frontend URL)
-CORS(app, resources={r"/*": {"origins": "https://image-caption-generator-m1vr97af8-aryankadam1134s-projects.vercel.app"}})
+# Allow specific frontend domain (Update with your actual Vercel URL)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Load BLIP model and processor for image captioning
 try:
@@ -19,13 +19,17 @@ except Exception as e:
     print(f"Error loading model: {e}")
     exit(1)
 
-@app.route("/upload", methods=["POST"])
+@app.route("/upload", methods=["OPTIONS", "POST"])
 def upload_image():
-    try:
-        # Allow CORS headers in the response
-        response = jsonify({})
+    # Allow CORS headers in response
+    if request.method == "OPTIONS":
+        response = jsonify({"message": "CORS preflight successful"})
         response.headers.add("Access-Control-Allow-Origin", "*")
-        
+        response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+        return response, 200
+
+    try:
         if "image" not in request.files:
             return jsonify({"error": "No image provided"}), 400
 
@@ -37,7 +41,9 @@ def upload_image():
         out = model.generate(**inputs)
         caption = processor.decode(out[0], skip_special_tokens=True)
 
-        return jsonify({"caption": caption})
+        response = jsonify({"caption": caption})
+        response.headers.add("Access-Control-Allow-Origin", "*")  # Allow all origins
+        return response
 
     except Exception as e:
         print(f"Error processing image: {e}")
