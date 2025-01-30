@@ -27,7 +27,7 @@ const ImageUploader = () => {
       setError("");
 
       const response = await axios.post(
-        "http://localhost:5000/upload", // Change this URL
+        "https://image-caption-generator-nf9n.onrender.com/upload", // Change this URL
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

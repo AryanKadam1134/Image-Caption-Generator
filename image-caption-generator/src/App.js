@@ -8,7 +8,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_URL = "http://localhost:5000/upload";
+  const API_URL = "https://image-caption-generator-nf9n.onrender.com/upload";
 
   const handleImageChange = (event) => {
     setSelectedImage(event.target.files[0]);
