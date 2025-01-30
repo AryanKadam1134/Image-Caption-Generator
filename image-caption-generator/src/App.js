@@ -29,7 +29,7 @@ function App() {
       setLoading(true);
       setError("");
 
-      const response = await axios.post(`${API_URL}/upload`, formData, {
+      const response = await axios.post(`${API_URL}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

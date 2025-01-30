@@ -27,7 +27,7 @@ const ImageUploader = () => {
       setError("");
 
       const response = await axios.post(
-        "https://image-caption-generator-udlp.onrender.com/upload", // Change this URL
+        "https://image-caption-generator-udlp.onrender.com", // Change this URL
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
