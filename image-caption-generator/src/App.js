@@ -8,7 +8,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_URL = "https://image-caption-generator-udlp.onrender.com";
+  const API_URL = "http://localhost:5000/upload";
 
   const handleImageChange = (event) => {
     setSelectedImage(event.target.files[0]);
@@ -18,7 +18,7 @@ function App() {
 
   const handleUpload = async () => {
     if (!selectedImage) {
-      setError("⚠️ Please select an image first.");
+      setError("Please select an image first.");
       return;
     }
 
@@ -36,12 +36,12 @@ function App() {
       if (response.status === 200) {
         setCaption(response.data.caption);
       } else {
-        setError("⚠️ Unexpected response from the server.");
+        setError("Unexpected response from the server.");
       }
     } catch (error) {
       console.error("Error uploading image:", error);
       setError(
-        error.response?.data?.error || "⚠️ Failed to generate caption. Please try again."
+        error.response?.data?.error || "Failed to generate caption. Please try again."
       );
     } finally {
       setLoading(false);
@@ -51,7 +51,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1 className="title">🖼️ Image Caption Generator</h1>
+        <h1 className="title">Image Caption Generator</h1>
 
         <div className="upload-section">
           <input
@@ -65,7 +65,7 @@ function App() {
             className="upload-button custom-upload-button"
             disabled={loading}
           >
-            {loading ? "⏳ Generating..." : "🚀 Generate Caption"}
+            {loading ? "Generating..." : "Generate Caption"}
           </button>
         </div>
 
