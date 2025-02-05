@@ -57,14 +57,14 @@ python -m venv venv<br/>
 source venv/bin/activate  # (On Windows: venv\Scripts\activate)<br/>
 pip install -r requirements.txt<br/>
 python app.py<br/>
-Backend will run on [http://localhost:5000]<br/>
+Backend will run on http://localhost:5000<br/>
 
 3️⃣ Frontend Setup
 
 cd image-caption-generator<br/>
 npm install<br/>
 npm start<br/>
-Frontend will run on [http://localhost:3000]<br/>
+Frontend will run on http://localhost:3000<br/>
 
 ## 🌍 Deployment
 Backend can be deployed on Render, Heroku, or AWS<br/>
