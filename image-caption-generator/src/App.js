@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
+import Camera from "./components/Camera";
 
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showCamera, setShowCamera] = useState(false);
 
   const API_URL = "http://localhost:5000/upload";
 
@@ -48,6 +50,11 @@ function App() {
     }
   };
 
+  const handleCameraCapture = (file) => {
+    setSelectedImage(file);
+    setShowCamera(false);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -61,6 +68,12 @@ function App() {
             className="file-input custom-file-input"
           />
           <button
+            onClick={() => setShowCamera(true)}
+            className="camera-toggle-button"
+          >
+            Use Camera
+          </button>
+          <button
             onClick={handleUpload}
             className="upload-button custom-upload-button"
             disabled={loading}
@@ -69,10 +82,16 @@ function App() {
           </button>
         </div>
 
+        {showCamera && (
+          <div className="camera-modal">
+            <Camera onCapture={handleCameraCapture} />
+          </div>
+        )}
+
         {error && <p className="error-message">{error}</p>}
 
         <div className="result-section">
-          {selectedImage && (
+          {selectedImage && !showCamera && (
             <div className="image-preview">
               <img
                 src={URL.createObjectURL(selectedImage)}
