@@ -70,8 +70,9 @@ function App() {
           <button
             onClick={() => setShowCamera(true)}
             className="camera-toggle-button"
+            title="Use Camera"
           >
-            Use Camera
+            <i className="fas fa-camera"></i>
           </button>
           <button
             onClick={handleUpload}

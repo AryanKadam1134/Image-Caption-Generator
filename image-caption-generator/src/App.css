@@ -17,12 +17,15 @@ body{
 
 .upload-section {
   margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .file-input {
   padding: 10px;
   font-size: 1rem;
-  margin-right: 10px;
 }
 
 .upload-button {
@@ -104,15 +107,25 @@ body{
   background-color: #2ecc71;
   color: white;
   border: none;
-  padding: 10px 20px;
-  font-size: 1rem;
+  padding: 10px 15px;
+  font-size: 1.2rem;
   cursor: pointer;
   border-radius: 5px;
-  margin-left: 10px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  /* Remove margin-left and margin-right since we're using gap */
 }
 
 .camera-toggle-button:hover {
   background-color: #27ae60;
+}
+
+.camera-toggle-button i {
+  font-size: 1.4rem;
 }
 
 .camera-modal {
