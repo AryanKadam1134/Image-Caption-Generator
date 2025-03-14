@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 import Camera from "./components/Camera";
@@ -9,8 +9,18 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showCamera, setShowCamera] = useState(false);
+  const [languages, setLanguages] = useState({});
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [originalCaption, setOriginalCaption] = useState("");
 
   const API_URL = "http://localhost:5000/upload";
+
+  useEffect(() => {
+    // Fetch supported languages when component mounts
+    axios.get('http://localhost:5000/languages')
+      .then(response => setLanguages(response.data))
+      .catch(error => console.error('Error fetching languages:', error));
+  }, []);
 
   const handleImageChange = (event) => {
     setSelectedImage(event.target.files[0]);
@@ -26,6 +36,7 @@ function App() {
 
     const formData = new FormData();
     formData.append("image", selectedImage);
+    formData.append("language", selectedLanguage);
 
     try {
       setLoading(true);
@@ -37,6 +48,7 @@ function App() {
 
       if (response.status === 200) {
         setCaption(response.data.caption);
+        setOriginalCaption(response.data.original_caption);
       } else {
         setError("Unexpected response from the server.");
       }
@@ -74,6 +86,17 @@ function App() {
           >
             <i className="fas fa-camera"></i>
           </button>
+          <select
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+            className="language-select"
+          >
+            {Object.entries(languages).map(([code, name]) => (
+              <option key={code} value={code}>
+                {name}
+              </option>
+            ))}
+          </select>
           <button
             onClick={handleUpload}
             className="upload-button custom-upload-button"
@@ -105,6 +128,11 @@ function App() {
           {caption && (
             <div className="caption-display">
               <p className="generated-caption colorful-caption">{caption}</p>
+              {selectedLanguage !== 'en' && (
+                <p className="original-caption">
+                  English: {originalCaption}
+                </p>
+              )}
             </div>
           )}
         </div>

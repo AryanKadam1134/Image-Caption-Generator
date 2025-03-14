@@ -2,12 +2,24 @@ import os
 from flask import Flask, request, jsonify
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
+from deep_translator import GoogleTranslator
 
 app = Flask(__name__)
-
-# Allow specific frontend domain (Update with your actual Vercel URL)
 CORS(app, resources={r"/*": {"origins": "*"}})
+
+# Supported languages dict
+SUPPORTED_LANGUAGES = {
+    'en': 'English',
+    'es': 'Spanish',
+    'fr': 'French',
+    'de': 'German',
+    'hi': 'Hindi',
+    'zh-CN': 'Chinese',
+    'ja': 'Japanese',
+    'ko': 'Korean',
+    'ar': 'Arabic'
+}
 
 # Load BLIP model and processor for image captioning
 try:
@@ -21,7 +33,6 @@ except Exception as e:
 
 @app.route("/upload", methods=["OPTIONS", "POST"])
 def upload_image():
-    # Allow CORS headers in response
     if request.method == "OPTIONS":
         response = jsonify({"message": "CORS preflight successful"})
         response.headers.add("Access-Control-Allow-Origin", "*")
@@ -33,21 +44,42 @@ def upload_image():
         if "image" not in request.files:
             return jsonify({"error": "No image provided"}), 400
 
+        # Get target language from request
+        target_language = request.form.get('language', 'en')
+        
         image_file = request.files["image"]
         image = Image.open(image_file.stream).convert("RGB")
 
-        # Process the image and generate caption
+        # Generate caption in English
         inputs = processor(images=image, return_tensors="pt")
         out = model.generate(**inputs)
-        caption = processor.decode(out[0], skip_special_tokens=True)
+        caption_en = processor.decode(out[0], skip_special_tokens=True)
 
-        response = jsonify({"caption": caption})
-        response.headers.add("Access-Control-Allow-Origin", "*")  # Allow all origins
+        # Translate caption if target language is not English
+        if target_language != 'en':
+            try:
+                translator = GoogleTranslator(source='en', target=target_language)
+                caption = translator.translate(caption_en)
+            except Exception as e:
+                print(f"Translation error: {e}")
+                caption = caption_en  # Fallback to English if translation fails
+        else:
+            caption = caption_en
+
+        response = jsonify({
+            "caption": caption,
+            "original_caption": caption_en
+        })
+        response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
     except Exception as e:
         print(f"Error processing image: {e}")
         return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
+
+@app.route("/languages", methods=["GET"])
+def get_languages():
+    return jsonify(SUPPORTED_LANGUAGES)
 
 @app.route("/", methods=["GET"])
 def home():

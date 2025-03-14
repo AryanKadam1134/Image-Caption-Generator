@@ -139,3 +139,24 @@ body{
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
+
+.language-select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+}
+
+.language-select:focus {
+  border-color: #3498db;
+}
+
+.original-caption {
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-top: 10px;
+  font-style: italic;
+}
