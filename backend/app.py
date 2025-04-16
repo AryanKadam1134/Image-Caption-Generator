@@ -50,8 +50,12 @@ def upload_image():
         image_file = request.files["image"]
         image = Image.open(image_file.stream).convert("RGB")
 
-        # Generate caption in English
-        inputs = processor(images=image, return_tensors="pt")
+        # Generate caption in English with padding
+        inputs = processor(
+            images=image, 
+            return_tensors="pt",
+            padding=True  # Add padding parameter
+        )
         out = model.generate(**inputs)
         caption_en = processor.decode(out[0], skip_special_tokens=True)
 

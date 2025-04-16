@@ -44,14 +44,15 @@ body{
 
 .result-section {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;  /* Changed from space-between to center */
   align-items: center;
   margin-top: 30px;
+  gap: 40px;  /* Added specific gap between image and caption */
 }
 
 .image-preview,
 .caption-display {
-  width: 45%;
+  width: 40%;  /* Reduced from 45% */
   text-align: center;
 }
 
@@ -63,10 +64,12 @@ body{
 }
 
 .generated-caption {
-  font-size: 1.2rem;
+  font-size: 1.5rem;  /* Increased from 1.2rem */
   color: #34495e;
   font-style: italic;
-  margin-top: 20px;
+  margin-top: 10px;  /* Reduced from 20px */
+  line-height: 1.4;  /* Added for better readability */
+  font-weight: 500;  /* Added for better visibility */
 }
 
 .camera-container {
@@ -155,8 +158,8 @@ body{
 }
 
 .original-caption {
-  font-size: 1rem;
+  font-size: 1.2rem;  /* Increased from 1rem */
   color: #7f8c8d;
-  margin-top: 10px;
+  margin-top: 10px;  /* Reduced from 15px */
   font-style: italic;
 }
