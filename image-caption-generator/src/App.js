@@ -12,6 +12,7 @@ function App() {
   const [languages, setLanguages] = useState({});
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [originalCaption, setOriginalCaption] = useState("");
+  const [metrics, setMetrics] = useState(null);
 
   const API_URL = "http://localhost:5000/upload";
 
@@ -49,6 +50,11 @@ function App() {
       if (response.status === 200) {
         setCaption(response.data.caption);
         setOriginalCaption(response.data.original_caption);
+        if (response.data.metrics) {
+          setMetrics(response.data.metrics);
+        } else {
+          setMetrics(null);
+        }
       } else {
         setError("Unexpected response from the server.");
       }
@@ -65,6 +71,7 @@ function App() {
   const handleCameraCapture = (file) => {
     setSelectedImage(file);
     setShowCamera(false);
+    
   };
 
   return (
@@ -133,6 +140,30 @@ function App() {
                   English: {originalCaption}
                 </p>
               )}
+            </div>
+          )}
+
+          {metrics && (
+            <div className="metrics-display">
+              <h3>Evaluation Metrics</h3>
+              <div className="metrics-grid">
+                <div className="metric">
+                  <span className="metric-label">BLEU-1:</span>
+                  <span className="metric-value">{metrics.bleu1}%</span>
+                </div>
+                <div className="metric">
+                  <span className="metric-label">BLEU-4:</span>
+                  <span className="metric-value">{metrics.bleu4}%</span>
+                </div>
+                <div className="metric">
+                  <span className="metric-label">METEOR:</span>
+                  <span className="metric-value">{metrics.meteor}%</span>
+                </div>
+                <div className="metric">
+                  <span className="metric-label">CIDEr:</span>
+                  <span className="metric-value">{metrics.cider}%</span>
+                </div>
+              </div>
             </div>
           )}
         </div>

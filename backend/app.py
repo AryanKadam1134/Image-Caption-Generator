@@ -4,6 +4,7 @@ from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from flask_cors import CORS
 from deep_translator import GoogleTranslator
+from metrics import calculate_metrics
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -19,6 +20,16 @@ SUPPORTED_LANGUAGES = {
     'ja': 'Japanese',
     'ko': 'Korean',
     'ar': 'Arabic'
+}
+
+# Reference captions for evaluation
+REFERENCE_CAPTIONS = {
+    'test_image_1.jpg': [
+        "a person riding a surfboard on a wave",
+        "surfer riding ocean wave during daytime",
+        "someone surfing on blue water wave",
+    ],
+    # Add more reference captions for different images
 }
 
 # Load BLIP model and processor for image captioning
@@ -59,6 +70,15 @@ def upload_image():
         out = model.generate(**inputs)
         caption_en = processor.decode(out[0], skip_special_tokens=True)
 
+        # Calculate evaluation metrics if reference captions exist
+        metrics = None
+        image_filename = image_file.filename
+        if image_filename in REFERENCE_CAPTIONS:
+            metrics = calculate_metrics(
+                caption_en,
+                REFERENCE_CAPTIONS[image_filename]
+            )
+
         # Translate caption if target language is not English
         if target_language != 'en':
             try:
@@ -70,10 +90,15 @@ def upload_image():
         else:
             caption = caption_en
 
-        response = jsonify({
+        response_data = {
             "caption": caption,
-            "original_caption": caption_en
-        })
+            "original_caption": caption_en,
+        }
+
+        if metrics:
+            response_data["metrics"] = metrics
+
+        response = jsonify(response_data)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 

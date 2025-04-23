@@ -163,3 +163,42 @@ body{
   margin-top: 10px;  /* Reduced from 15px */
   font-style: italic;
 }
+
+.metrics-display {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.metrics-display h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.metric-label {
+  font-weight: 500;
+  color: #34495e;
+}
+
+.metric-value {
+  font-weight: bold;
+  color: #2ecc71;
+}
